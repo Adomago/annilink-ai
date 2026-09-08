@@ -1,36 +1,69 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# AniLink AI MVP
 
-## Getting Started
+AniLink AI is a portfolio-grade SaaS MVP for direct farmer-to-buyer produce trading with AI-assisted workflows.
 
-First, run the development server:
+## Stack
+- Next.js 16 App Router + TypeScript + Tailwind
+- Supabase Auth + Postgres + Storage + RLS
+- Groq API via server-side Route Handlers (`/app/api/ai/*`)
+- Recharts for admin analytics
+
+## Features
+### Farmer
+- Register/login and role-routed dashboard
+- Create/edit/delete produce listings with image upload
+- Receive and process incoming orders (accept/reject/complete/cancel)
+- AI tools: assistant chat, listing generator, price recommendation
+
+### Buyer
+- Register/login and role-routed dashboard
+- Browse marketplace with search/filters
+- View listing details and place orders
+- Track order history and statuses
+- AI farmer matching for sourcing requests
+
+### Admin
+- User list with role visibility and suspend toggle
+- Listing moderation status updates
+- All-orders table
+- Analytics cards and charts (orders over time, GMV, listings by category)
+
+## Database model
+MVP tables:
+- `profiles`
+- `listings`
+- `orders`
+- `ai_chat_logs`
+
+See migration: `/home/runner/work/annilink-ai/annilink-ai/supabase/migrations/20260908143000_init_mvp.sql`
+
+## Environment variables
+Copy `.env.example` to `.env.local` and set values:
 
 ```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
+NEXT_PUBLIC_SUPABASE_URL=
+NEXT_PUBLIC_SUPABASE_ANON_KEY=
+SUPABASE_SERVICE_ROLE_KEY=
+GROQ_API_KEY=
+GROQ_MODEL=llama-3.3-70b-versatile
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+## Local development
+```bash
+npm install
+npm run dev
+```
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+## Supabase setup
+1. Run migration SQL in Supabase SQL editor.
+2. Create demo users in Supabase Auth and assign roles by inserting matching rows in `profiles` (same `id` as `auth.users.id`).
+3. Optional: run `/home/runner/work/annilink-ai/annilink-ai/supabase/seed/seed_mvp.sql` after at least one farmer profile exists.
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+## Demo accounts (example)
+Create these in Supabase Auth and matching `profiles` rows:
+- farmer.demo@anilink.ai (role: farmer)
+- buyer.demo@anilink.ai (role: buyer)
+- admin.demo@anilink.ai (role: admin)
 
-## Learn More
-
-To learn more about Next.js, take a look at the following resources:
-
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
-
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
-
-## Deploy on Vercel
-
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+## AI pricing note
+UI includes: **“AI-assisted estimate — verify against local market rates.”**
